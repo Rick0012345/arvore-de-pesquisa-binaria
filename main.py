@@ -1,15 +1,16 @@
 import matplotlib.pyplot as plt
-import numpy as np
 import json
+
 # Função para desenhar a linha (vértice) entre dois nós
-def desenhar_vertice(ax, pos1, pos2):
+def desenhar_aresta(ax, pos1, pos2):
     linha_x = [pos1[0], pos2[0]]
     linha_y = [pos1[1], pos2[1]]
     ax.plot(linha_x, linha_y, 'k-')  # Desenha a linha em preto
 
-# Função para plotar a árvore completa com vértices
+# Função para plotar a árvore completa com vértices usando o elemento central como raiz
 def plotar_arvore_completa(vetor, ax, posicoes, inicio, fim, depth=0, pos_x=0):
     if inicio <= fim:
+        # Encontrar o índice do elemento central
         posicao = (inicio + fim) // 2
         posicoes[posicao] = (pos_x, -depth)  # Define a posição do nó atual
 
@@ -20,13 +21,13 @@ def plotar_arvore_completa(vetor, ax, posicoes, inicio, fim, depth=0, pos_x=0):
         # Desenha o vértice com o nó filho esquerdo, se existir
         if inicio <= posicao - 1:
             filho_esquerdo_pos = (pos_x - 2**(-(depth + 1)), -(depth + 1))
-            desenhar_vertice(ax, (pos_x, -depth), filho_esquerdo_pos)
+            desenhar_aresta(ax, (pos_x, -depth), filho_esquerdo_pos)
             plotar_arvore_completa(vetor, ax, posicoes, inicio, posicao - 1, depth + 1, pos_x - 2**(-(depth + 1)))
 
         # Desenha o vértice com o nó filho direito, se existir
         if posicao + 1 <= fim:
             filho_direito_pos = (pos_x + 2**(-(depth + 1)), -(depth + 1))
-            desenhar_vertice(ax, (pos_x, -depth), filho_direito_pos)
+            desenhar_aresta(ax, (pos_x, -depth), filho_direito_pos)
             plotar_arvore_completa(vetor, ax, posicoes, posicao + 1, fim, depth + 1, pos_x + 2**(-(depth + 1)))
 
 # Função para atualizar o nó atual (destacar)
@@ -65,11 +66,14 @@ def busca_binaria_visualizada(vetor, item, inicio, fim, ax, posicoes):
         return -1
 
 # Função principal para iniciar a busca binária visualizada
+# Função principal para iniciar a busca binária visualizada
 def realizar_busca_visualizada(dicionario):
     vetor = dicionario["Vetor"]
     item = dicionario["Item"]
     # Ordenar o vetor antes da busca binária
     vetor.sort()
+    # Adiciona um print para visualizar o vetor ordenado
+    print("Vetor ordenado:", vetor)
 
     # Criar a figura e os eixos
     fig, ax = plt.subplots(figsize=(10, 6))
@@ -97,18 +101,16 @@ def realizar_busca_visualizada(dicionario):
     else:
         print(f"Item {item} não encontrado.")
 
-arquivo = "dic.txt"
+
+arquivo = "vetor.txt"
 
 def ler_dicionario(arquivo):
-    with open(arquivo, 'r') as arquiv:
-        dic = json.load(arquiv)
+    with open(arquivo, 'r') as arq:
+        dic = json.load(arq)
     return dic
 
 # Armazena o resultado da função
 resultado = ler_dicionario(arquivo)
 
-# Imprime o resultado
-# print(resultado)
-
-    # Realiza a busca binária visualizada
+# Realiza a busca binária visualizada
 realizar_busca_visualizada(resultado)
